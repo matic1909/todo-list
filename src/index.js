@@ -1,1 +1,3 @@
-console.log("Hello from JavaScript!");
+import sayHello from "./components/task";
+
+sayHello();
