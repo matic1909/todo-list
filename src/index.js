@@ -1,3 +1,3 @@
-import sayHello from "./components/task";
+import { TaskList } from "./components/taskList";
 
-sayHello();
+const defaultList = TaskList("Default");
