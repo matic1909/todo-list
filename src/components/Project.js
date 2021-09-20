@@ -2,26 +2,30 @@ import { Task } from "./task";
 
 const Project = (name) => {
   let projectName = name;
-  let tasks = [];
+  let _tasks = [];
 
   const getName = () => projectName;
   const setName = (name) => {
     projectName = name;
-  }
+  };
 
-  const getTasks = () => tasks;
+  const getTasks = () => _tasks;
   const setTasks = (newTasks) => {
-    tasks = newTasks;
-  }
+    _tasks = newTasks;
+  };
 
   const addTask = (name, description, dueDate) => {
     const newTask = Task(name, description, dueDate);
-    tasks.push(newTask);
-  }
+    _tasks.push(newTask);
+  };
 
   const deleteTask = (taskName) => {
-    tasks = tasks.filter((task) => task.getName() !== taskName);
-  }
+    _tasks = _tasks.filter((task) => task.getName() !== taskName);
+  };
+
+  const isEmpty = () => {
+    return _tasks.length < 0;
+  };
 
   return {
     getName,
@@ -30,7 +34,8 @@ const Project = (name) => {
     setTasks,
     addTask,
     deleteTask,
-  }
-}
+    isEmpty,
+  };
+};
 
 export { Project };

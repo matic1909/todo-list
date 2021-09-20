@@ -5,7 +5,7 @@ const todoList = (() => {
 
   const getProjects = () => _projects;
   const setProjects = (newProjects) => {
-    projects = newProjects;
+    _projects = newProjects;
   }
 
   const addProject = (name) => {
@@ -22,12 +22,17 @@ const todoList = (() => {
     return _projects.find((project) => project.getName() === name);
   }
 
+  const hasProjects = () => {
+    return _projects.length > 0;
+  }
+
   return {
     getProjects,
     setProjects,
     addProject,
     removeProject,
     findProject,
+    hasProjects
   }
 })();
 
