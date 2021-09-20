@@ -1,12 +1,12 @@
 import { Task } from "./task";
 
-const TaskList = (name) => {
-  let listName = name;
+const Project = (name) => {
+  let projectName = name;
   let tasks = [];
 
-  const getName = () => listName;
+  const getName = () => projectName;
   const setName = (name) => {
-    listName = name;
+    projectName = name;
   }
 
   const getTasks = () => tasks;
@@ -33,4 +33,4 @@ const TaskList = (name) => {
   }
 }
 
-export { TaskList };
+export { Project };

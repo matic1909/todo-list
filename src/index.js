@@ -1,3 +1,5 @@
-import { TaskList } from "./components/taskList";
+import { todoList } from "./components/todoList";
+import { displayManager } from "./components/UI";
+import style from "./style.css";
 
-const defaultList = TaskList("Default");
+displayManager.renderPage(todoList.getProjects());
