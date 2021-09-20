@@ -6,14 +6,20 @@ const displayManager = (() => {
 
   const _makeProjectElement = (project) => {
     const projectName = project.getName();
-    const projectElement = document.createElement("li");
-    projectElement.textContent = projectName;
-    projectElement.addEventListener("click", () => {
+    const projectElement = document.createElement("div");
+    projectElement.classList.add("project");
+    const projectTitle = document.createElement("div");
+    projectTitle.classList.add("project-title");
+    projectTitle.textContent = projectName;
+    projectTitle.addEventListener("click", () => {
       _changeSelectedProject(projectName);
     });
 
-    const deleteProject = document.createElement("span");
+    projectElement.appendChild(projectTitle);
+
+    const deleteProject = document.createElement("div");
     deleteProject.textContent = "X";
+    deleteProject.classList.add("delete-project-button");
     deleteProject.addEventListener("click", () =>
       _deleteProjectHandler(projectName)
     );
@@ -28,14 +34,15 @@ const displayManager = (() => {
   };
 
   const _makeProjectList = (projects) => {
-    const projectDiv = document.createElement("ul");
+    const projectDiv = document.createElement("div");
     projectDiv.classList.add("projects");
     projects.forEach((project) => {
       const projectElement = _makeProjectElement(project);
       projectDiv.appendChild(projectElement);
     });
-    const addProject = document.createElement("li");
+    const addProject = document.createElement("div");
     addProject.textContent = "+ Add Project";
+    addProject.classList.add("add");
     addProject.addEventListener("click", (e) => {
       projectDiv.appendChild(_newProjectForm());
       projectDiv.removeChild(e.target);
@@ -72,38 +79,46 @@ const displayManager = (() => {
     const content = document.createElement("p");
     content.textContent = `${title}`;
 
-    taskElement.appendChild(content);
-
-    const deleteTask = document.createElement("span");
+    const deleteTask = document.createElement("div");
     deleteTask.textContent = "X";
+    deleteTask.classList.add("delete-task-button");
     deleteTask.addEventListener("click", () => _deleteTaskHandler(title));
     taskElement.appendChild(deleteTask);
+    taskElement.appendChild(content);
     return taskElement;
   };
 
-  const _makeTaskList = (tasks) => {
+  const _makeTaskList = (project) => {
     const taskList = document.createElement("div");
-    if (tasks) {
-      const title = _selectedProject.getName();
-      const h1 = document.createElement("h1");
+    taskList.classList.add("task-list");
+
+    const h1 = document.createElement("h1");
+    taskList.appendChild(h1);
+
+    if (project) {
+      const title = project.getName();
       h1.textContent = title;
+      const tasks = project.getTasks();
 
-      taskList.appendChild(h1);
-      taskList.classList.add("task-list");
-      tasks.forEach((task) => {
-        const taskElement = _makeTaskElement(task);
-        taskList.appendChild(taskElement);
+      if (tasks) {
+        tasks.forEach((task) => {
+          const taskElement = _makeTaskElement(task);
+          taskList.appendChild(taskElement);
+        });
+      };
+
+      const addTask = document.createElement("div");
+      addTask.textContent = "+ Add Task";
+      addTask.addEventListener("click", (e) => {
+        const taskForm = _newTaskForm();
+        taskList.appendChild(taskForm);
+        taskList.removeChild(e.target);
       });
-    }
 
-    const addTask = document.createElement("div");
-    addTask.textContent = "+ Add Task";
-    addTask.addEventListener("click", (e) => {
-      const taskForm = _newTaskForm();
-      taskList.appendChild(taskForm);
-      taskList.removeChild(e.target);
-    });
-    taskList.appendChild(addTask);
+      taskList.appendChild(addTask);
+    } else {
+      h1.textContent = "No Project selected"
+    }
 
     return taskList;
   };
@@ -136,7 +151,6 @@ const displayManager = (() => {
   const _addProjectHandler = (name) => {
     todoList.addProject(name);
     _changeSelectedProject(name);
-    renderPage();
   };
 
   const _deleteProjectHandler = (name) => {
@@ -163,7 +177,7 @@ const displayManager = (() => {
   const renderMain = () => {
     const main = document.createElement("main");
     const projectsList = _makeProjectList(todoList.getProjects());
-    const taskList = _makeTaskList(_selectedProject?.getTasks());
+    const taskList = _makeTaskList(_selectedProject || null);
     main.appendChild(projectsList);
     main.appendChild(taskList);
     _body.appendChild(main);

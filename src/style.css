@@ -35,21 +35,61 @@ button {
 body {
   height: 100vh;
   width: 100vw;
+  font-family: 'Montserrat', sans-serif;
 }
 
 main {
   display: flex;
+  height: 100%;
 }
 
 .nav {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 8px;
-  background-color: red;
+  background-color: rgb(72, 69, 76);
   color: white;
+  height: 64px;
 }
 
 .projects {
   height: 100%;
-  width: 150px;
+  width: 200px;
+  background-color: rgb(180, 180, 180);
+  padding: 16px;
 } 
+
+.add {
+  cursor: pointer;
+}
+
+.project {
+  display: flex;
+  justify-content: space-between;
+}
+
+.delete-project-button {
+  cursor: pointer;
+}
+
+.delete-task-button {
+  cursor: pointer;
+  margin-right: 16px;
+}
+
+.task-list {
+  height: 100%;
+  background-color: rgb(214, 214, 214);
+  width: 100%;
+  padding: 16px;
+}
+
+.task-list > h1 {
+  margin-bottom: 16px;
+}
+
+.task {
+  display: flex;
+  width: 85%;
+}
