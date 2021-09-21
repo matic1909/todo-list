@@ -2,7 +2,32 @@ import { TodoList } from "./TodoList";
 
 const displayManager = (() => {
   const _body = document.body;
-  let _selectedProject = TodoList.getProjects()[0];
+  let _selectedProject = TodoList.getProjects()[0] || null;
+  let tasksToShow = _selectedProject.getTasks();
+
+  // Filters
+  const _filters = () => {
+    const filterDiv = document.createElement("div");
+    filterDiv.classList.add("filters");
+
+    const allTasksFilter = document.createElement("div");
+    allTasksFilter.textContent = "Inbox";
+    allTasksFilter.addEventListener("click", () => {
+      tasksToShow = TodoList.getAllTasks();
+      renderPage();
+    });
+
+    const finishedTasksFilter = document.createElement("div");
+    finishedTasksFilter.textContent = "Completed";
+    finishedTasksFilter.addEventListener("click", () => {
+      tasksToShow = TodoList.getAllTasks().filter((task) => task.isCompleted() === true);
+      renderPage();
+    });
+
+    filterDiv.appendChild(allTasksFilter);
+    filterDiv.appendChild(finishedTasksFilter);
+    return filterDiv;
+  };
 
   // Projects
   const _makeProjectElement = (project) => {
@@ -33,11 +58,16 @@ const displayManager = (() => {
 
   const _changeSelectedProject = (name) => {
     _selectedProject = TodoList.findProject(name);
+    tasksToShow = _selectedProject.getTasks();
     renderPage();
   };
 
-  const _makeProjectList = (projects) => {
+  const _projectList = (projects) => {
     const projectDiv = document.createElement("div");
+    const title = document.createElement("h2");
+    title.textContent = "Your Projects";
+    title.classList.add("projects-title");
+    projectDiv.appendChild(title);
     projectDiv.classList.add("projects");
     projects.forEach((project) => {
       const projectElement = _makeProjectElement(project);
@@ -88,9 +118,8 @@ const displayManager = (() => {
   };
 
   // Tasks
-  const _makeTaskElement = (task) => {
+  const _TaskElement = (task) => {
     const title = task.getName();
-    // const desc = task.getDescription();
     const due = task.getDueDate();
 
     const taskElement = document.createElement("div");
@@ -105,7 +134,7 @@ const displayManager = (() => {
       _completeTaskHandler(task);
     });
 
-    if(task.isCompleted()) {
+    if (task.isCompleted()) {
       taskElement.classList.add("completed");
       completeTaskIcon.classList.remove("far", "fa-circle");
       completeTaskIcon.classList.add("fas", "fa-check-circle");
@@ -119,14 +148,14 @@ const displayManager = (() => {
 
     const dueDate = document.createElement("p");
     dateContainer.appendChild(dueDate);
-    if(due !== "") {
+    if (due !== "") {
       dueDate.textContent = due;
     } else {
       dueDate.textContent = "no date";
     }
     dueDate.addEventListener("click", (e) => {
       dateContainer.appendChild(_datePicker(task));
-      dateContainer.removeChild(e.target)
+      dateContainer.removeChild(e.target);
     });
 
     taskElement.appendChild(completeTask);
@@ -136,42 +165,31 @@ const displayManager = (() => {
     return taskElement;
   };
 
-  const _makeTaskList = (project) => {
+  const _TaskList = (tasks) => {
     const taskList = document.createElement("div");
     taskList.classList.add("task-list");
 
-    const h1 = document.createElement("h1");
-    taskList.appendChild(h1);
-
-    if (project) {
-      const title = project.getName();
-      h1.textContent = title;
-      const tasks = project.getTasks();
-
-      if (tasks) {
-        tasks.forEach((task) => {
-          const taskElement = _makeTaskElement(task);
-          taskList.appendChild(taskElement);
-        });
-      };
-
-      const addTask = document.createElement("div");
-      addTask.textContent = "+ Add Task";
-      addTask.addEventListener("click", (e) => {
-        const taskForm = _newTaskForm();
-        taskList.appendChild(taskForm);
-        taskList.removeChild(e.target);
+    if (tasks) {
+      tasks.forEach((task) => {
+        const taskElement = _TaskElement(task);
+        taskList.appendChild(taskElement);
       });
-
-      taskList.appendChild(addTask);
-    } else {
-      h1.textContent = "No Project selected"
     }
+
+    const addTaskButton = document.createElement("div");
+    addTaskButton.textContent = "+ Add Task";
+    addTaskButton.addEventListener("click", (e) => {
+      const taskForm = _TaskForm();
+      taskList.appendChild(taskForm);
+      taskList.removeChild(e.target);
+    });
+
+    taskList.appendChild(addTaskButton);
 
     return taskList;
   };
 
-  const _newTaskForm = () => {
+  const _TaskForm = () => {
     const form = document.createElement("div");
     const input = document.createElement("input");
     input.type = "text";
@@ -193,7 +211,7 @@ const displayManager = (() => {
       _changeDateHandler(task, e.target.value);
     });
     return datePicker;
-  }
+  };
 
   // Task event handlers
   const _addTaskHandler = (name) => {
@@ -205,16 +223,16 @@ const displayManager = (() => {
     task.setDueDate(date);
     console.log(date);
     renderPage();
-  }
+  };
 
   const _completeTaskHandler = (task) => {
-    if(task.isCompleted()) {
+    if (task.isCompleted()) {
       task.setCompleted(false);
     } else {
       task.setCompleted(true);
     }
     renderPage();
-  }
+  };
 
   const _deleteTaskHandler = (name) => {
     _selectedProject.deleteTask(name);
@@ -236,12 +254,20 @@ const displayManager = (() => {
     _body.appendChild(nav);
   };
 
+  const _leftSidePanel = (projects) => {
+    const sidePanel = document.createElement("div");
+    sidePanel.classList.add("side-panel");
+    sidePanel.appendChild(_filters());
+    sidePanel.appendChild(_projectList(projects));
+    return sidePanel;
+  };
+
   // Rendering
   const renderMain = () => {
     const main = document.createElement("main");
-    const projectsList = _makeProjectList(TodoList.getProjects());
-    const taskList = _makeTaskList(_selectedProject || null);
-    main.appendChild(projectsList);
+    const sidePanel = _leftSidePanel(TodoList.getProjects());
+    const taskList = _TaskList(tasksToShow);
+    main.appendChild(sidePanel);
     main.appendChild(taskList);
     _body.appendChild(main);
   };

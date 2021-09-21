@@ -26,13 +26,24 @@ const TodoList = (() => {
     return _projects.length > 0;
   }
 
+  const getAllTasks = () => {
+    const allTasks = [];
+    _projects.forEach((project) => {
+      project.getTasks().forEach(task => {
+        allTasks.push(task);
+      });
+    })
+    return allTasks;
+  }
+
   return {
     getProjects,
     setProjects,
     addProject,
     removeProject,
     findProject,
-    hasProjects
+    hasProjects,
+    getAllTasks
   }
 })();
 
