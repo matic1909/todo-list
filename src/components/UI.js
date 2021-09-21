@@ -1,3 +1,4 @@
+import { doc } from 'prettier';
 import TodoList from './TodoList';
 
 const displayManager = (() => {
@@ -160,9 +161,19 @@ const displayManager = (() => {
       dateContainer.removeChild(e.target);
     });
 
+    const deleteButton = document.createElement("div");
+    deleteButton.classList.add("delete-task-button");
+    const deleteIcon = document.createElement('i');
+    deleteIcon.classList.add('far', 'fa-trash-alt', 'fa-xs');
+    deleteButton.appendChild(deleteIcon);
+
+    deleteButton.addEventListener('click', () => deleteTaskHandler(title)
+    );
+
     taskElement.appendChild(completeTask);
     taskElement.appendChild(content);
     taskElement.appendChild(dateContainer);
+    taskElement.appendChild(deleteButton);
 
     return taskElement;
   };
@@ -235,10 +246,11 @@ const displayManager = (() => {
     renderPage();
   };
 
-  // const _deleteTaskHandler = (name) => {
-  //   selectedProject.deleteTask(name);
-  //   renderPage();
-  // };
+  const deleteTaskHandler = (name) => {
+    selectedProject.deleteTask(name);
+    tasksToShow = selectedProject.getTasks();
+    renderPage();
+  };
 
   const renderNav = () => {
     const nav = document.createElement('div');
