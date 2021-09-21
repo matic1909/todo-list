@@ -228,7 +228,11 @@ const displayManager = (() => {
     const title = document.createElement("span");
     title.textContent = "ToDo";
 
+    const logo = document.createElement("i");
+    logo.classList.add("nav-logo", "fas", "fa-check-double");
+
     nav.appendChild(title);
+    nav.appendChild(logo);
     _body.appendChild(nav);
   };
 
