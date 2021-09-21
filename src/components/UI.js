@@ -4,6 +4,7 @@ const displayManager = (() => {
   const _body = document.body;
   let _selectedProject = todoList.getProjects()[0];
 
+  // Projects
   const _makeProjectElement = (project) => {
     const projectName = project.getName();
     const projectElement = document.createElement("div");
@@ -68,23 +69,55 @@ const displayManager = (() => {
     return form;
   };
 
+  // Project event handlers
+  const _addProjectHandler = (name) => {
+    todoList.addProject(name);
+    _changeSelectedProject(name);
+  };
+
+  const _deleteProjectHandler = (name) => {
+    todoList.removeProject(name);
+    if (todoList.hasProjects()) {
+      _selectedProject = todoList.getProjects()[0];
+    } else {
+      _selectedProject = null;
+    }
+    renderPage();
+  };
+
+  // Tasks
   const _makeTaskElement = (task) => {
     const title = task.getName();
     // const desc = task.getDescription();
-    // const due = task.getDueDate();
+    const due = task.getDueDate();
 
     const taskElement = document.createElement("div");
     taskElement.classList.add("task");
-
-    const content = document.createElement("p");
-    content.textContent = `${title}`;
 
     const deleteTask = document.createElement("div");
     deleteTask.textContent = "X";
     deleteTask.classList.add("delete-task-button");
     deleteTask.addEventListener("click", () => _deleteTaskHandler(title));
+
+    const content = document.createElement("p");
+    content.textContent = `${title}`;
+
+    const dueDate = document.createElement("div");
+    dueDate.classList.add("date");
+    if(due !== "") {
+      dueDate.textContent = due;
+    } else {
+      dueDate.textContent = "no date";
+    }
+    dueDate.addEventListener("click", (e) => {
+      taskElement.appendChild(_datePicker(task));
+      taskElement.removeChild(e.target)
+    });
+
     taskElement.appendChild(deleteTask);
     taskElement.appendChild(content);
+    taskElement.appendChild(dueDate);
+
     return taskElement;
   };
 
@@ -138,28 +171,28 @@ const displayManager = (() => {
     return form;
   };
 
+  const _datePicker = (task) => {
+    const datePicker = document.createElement("input");
+    datePicker.type = "date";
+    datePicker.addEventListener("change", (e) => {
+      _changeDateHandler(task, e.target.value);
+    });
+    return datePicker;
+  }
+
+  // Task event handlers
   const _addTaskHandler = (name) => {
     _selectedProject.addTask(name);
     renderPage();
   };
 
+  const _changeDateHandler = (task, date) => {
+    task.setDueDate(date);
+    renderPage();
+  }
+
   const _deleteTaskHandler = (name) => {
     _selectedProject.deleteTask(name);
-    renderPage();
-  };
-
-  const _addProjectHandler = (name) => {
-    todoList.addProject(name);
-    _changeSelectedProject(name);
-  };
-
-  const _deleteProjectHandler = (name) => {
-    todoList.removeProject(name);
-    if (todoList.hasProjects()) {
-      _selectedProject = todoList.getProjects()[0];
-    } else {
-      _selectedProject = null;
-    }
     renderPage();
   };
 
@@ -174,6 +207,7 @@ const displayManager = (() => {
     _body.appendChild(nav);
   };
 
+  // Rendering
   const renderMain = () => {
     const main = document.createElement("main");
     const projectsList = _makeProjectList(todoList.getProjects());

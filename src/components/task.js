@@ -1,7 +1,7 @@
-const Task = (name, description, dueDate = "no date") => {
+const Task = (name, description = "", dueDate = "") => {
   let taskName = name;
   // let taskDesc = description;
-  // let taskDueDate = dueDate;
+  let taskDueDate = dueDate;
 
   const getName = () => taskName;
   const setName = (newName) => {
@@ -13,12 +13,12 @@ const Task = (name, description, dueDate = "no date") => {
   //   taskDesc = newDesc;
   // }
 
-  // const getDueDate = () => taskDueDate;
-  // const setDueDate = (newDate) => {
-  //   taskDueDate = newDate;
-  // }
+  const getDueDate = () => taskDueDate;
+  const setDueDate = (newDate) => {
+    taskDueDate = newDate;
+  }
 
-  return { getName, setName, /* getDescription, setDescription, getDueDate, setDueDate */};
+  return { getName, setName, getDueDate, setDueDate };
 }
 
 export { Task }

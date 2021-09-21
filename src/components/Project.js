@@ -27,6 +27,10 @@ const Project = (name) => {
     return _tasks.length < 0;
   };
 
+  const findTask = (name) => {
+    return _tasks.find((task) => task.getName() === name);
+  }
+
   return {
     getName,
     setName,
@@ -35,6 +39,7 @@ const Project = (name) => {
     addTask,
     deleteTask,
     isEmpty,
+    findTask
   };
 };
 
