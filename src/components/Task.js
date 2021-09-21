@@ -1,4 +1,4 @@
-const Task = (name, description = "", dueDate = "", completed = false) => {
+const Task = (name, description = '', dueDate = '', completed = false) => {
   let taskName = name;
   let taskDesc = description;
   let taskDueDate = dueDate;
@@ -20,7 +20,9 @@ const Task = (name, description = "", dueDate = "", completed = false) => {
   };
 
   const isCompleted = () => taskCompleted;
-  const setCompleted = (status) => (taskCompleted = status);
+  const setCompleted = (status) => {
+    taskCompleted = status;
+  };
 
   return {
     getName,
@@ -34,4 +36,4 @@ const Task = (name, description = "", dueDate = "", completed = false) => {
   };
 };
 
-export { Task };
+export default Task;

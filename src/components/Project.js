@@ -1,35 +1,32 @@
-import { Task } from "./Task";
+import Task from './Task';
 
 const Project = (name) => {
   let projectName = name;
-  let _tasks = [];
+  let tasks = [];
 
   const getName = () => projectName;
-  const setName = (name) => {
-    projectName = name;
+  const setName = (newName) => {
+    projectName = newName;
   };
 
-  const getTasks = () => _tasks;
+  const getTasks = () => tasks;
   const setTasks = (newTasks) => {
-    _tasks = newTasks;
+    tasks = newTasks;
   };
 
-  const addTask = (name, description, dueDate) => {
-    const newTask = Task(name, description, dueDate);
-    _tasks.push(newTask);
+  const addTask = (taskName, description, dueDate) => {
+    const newTask = Task(taskName, description, dueDate);
+    tasks.push(newTask);
   };
 
   const deleteTask = (taskName) => {
-    _tasks = _tasks.filter((task) => task.getName() !== taskName);
+    tasks = tasks.filter((task) => task.getName() !== taskName);
   };
 
-  const isEmpty = () => {
-    return _tasks.length < 0;
-  };
+  const isEmpty = () => tasks.length < 0;
 
-  const findTask = (name) => {
-    return _tasks.find((task) => task.getName() === name);
-  };
+  const findTask = (taskName) =>
+    tasks.find((task) => task.getName() === taskName);
 
   return {
     getName,
@@ -43,4 +40,4 @@ const Project = (name) => {
   };
 };
 
-export { Project };
+export default Project;
