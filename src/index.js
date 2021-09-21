@@ -1,5 +1,5 @@
-import { todoList } from "./components/todoList";
+import { TodoList } from "./components/TodoList";
 import { displayManager } from "./components/UI";
 import style from "./style.css";
 
-displayManager.renderPage(todoList.getProjects());
+displayManager.renderPage(TodoList.getProjects());

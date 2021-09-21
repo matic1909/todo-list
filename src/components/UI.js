@@ -1,8 +1,8 @@
-import { todoList } from "./todoList";
+import { TodoList } from "./TodoList";
 
 const displayManager = (() => {
   const _body = document.body;
-  let _selectedProject = todoList.getProjects()[0];
+  let _selectedProject = TodoList.getProjects()[0];
 
   // Projects
   const _makeProjectElement = (project) => {
@@ -19,7 +19,9 @@ const displayManager = (() => {
     projectElement.appendChild(projectTitle);
 
     const deleteProject = document.createElement("div");
-    deleteProject.textContent = "X";
+    const deleteIcon = document.createElement("i");
+    deleteIcon.classList.add("far", "fa-trash-alt", "fa-xs");
+    deleteProject.appendChild(deleteIcon);
     deleteProject.classList.add("delete-project-button");
     deleteProject.addEventListener("click", () =>
       _deleteProjectHandler(projectName)
@@ -30,7 +32,7 @@ const displayManager = (() => {
   };
 
   const _changeSelectedProject = (name) => {
-    _selectedProject = todoList.findProject(name);
+    _selectedProject = TodoList.findProject(name);
     renderPage();
   };
 
@@ -71,14 +73,14 @@ const displayManager = (() => {
 
   // Project event handlers
   const _addProjectHandler = (name) => {
-    todoList.addProject(name);
+    TodoList.addProject(name);
     _changeSelectedProject(name);
   };
 
   const _deleteProjectHandler = (name) => {
-    todoList.removeProject(name);
-    if (todoList.hasProjects()) {
-      _selectedProject = todoList.getProjects()[0];
+    TodoList.removeProject(name);
+    if (TodoList.hasProjects()) {
+      _selectedProject = TodoList.getProjects()[0];
     } else {
       _selectedProject = null;
     }
@@ -94,29 +96,42 @@ const displayManager = (() => {
     const taskElement = document.createElement("div");
     taskElement.classList.add("task");
 
-    const deleteTask = document.createElement("div");
-    deleteTask.textContent = "X";
-    deleteTask.classList.add("delete-task-button");
-    deleteTask.addEventListener("click", () => _deleteTaskHandler(title));
+    const completeTask = document.createElement("div");
+    const completeTaskIcon = document.createElement("i");
+    completeTaskIcon.classList.add("far", "fa-circle");
+    completeTask.appendChild(completeTaskIcon);
+    completeTask.classList.add("delete-task-button");
+    completeTask.addEventListener("click", () => {
+      _completeTaskHandler(task);
+    });
+
+    if(task.isCompleted()) {
+      taskElement.classList.add("completed");
+      completeTaskIcon.classList.remove("far", "fa-circle");
+      completeTaskIcon.classList.add("fas", "fa-check-circle");
+    }
 
     const content = document.createElement("p");
     content.textContent = `${title}`;
 
-    const dueDate = document.createElement("div");
-    dueDate.classList.add("date");
+    const dateContainer = document.createElement("div");
+    dateContainer.classList.add("date-container");
+
+    const dueDate = document.createElement("p");
+    dateContainer.appendChild(dueDate);
     if(due !== "") {
       dueDate.textContent = due;
     } else {
       dueDate.textContent = "no date";
     }
     dueDate.addEventListener("click", (e) => {
-      taskElement.appendChild(_datePicker(task));
-      taskElement.removeChild(e.target)
+      dateContainer.appendChild(_datePicker(task));
+      dateContainer.removeChild(e.target)
     });
 
-    taskElement.appendChild(deleteTask);
+    taskElement.appendChild(completeTask);
     taskElement.appendChild(content);
-    taskElement.appendChild(dueDate);
+    taskElement.appendChild(dateContainer);
 
     return taskElement;
   };
@@ -188,6 +203,16 @@ const displayManager = (() => {
 
   const _changeDateHandler = (task, date) => {
     task.setDueDate(date);
+    console.log(date);
+    renderPage();
+  }
+
+  const _completeTaskHandler = (task) => {
+    if(task.isCompleted()) {
+      task.setCompleted(false);
+    } else {
+      task.setCompleted(true);
+    }
     renderPage();
   }
 
@@ -210,7 +235,7 @@ const displayManager = (() => {
   // Rendering
   const renderMain = () => {
     const main = document.createElement("main");
-    const projectsList = _makeProjectList(todoList.getProjects());
+    const projectsList = _makeProjectList(TodoList.getProjects());
     const taskList = _makeTaskList(_selectedProject || null);
     main.appendChild(projectsList);
     main.appendChild(taskList);

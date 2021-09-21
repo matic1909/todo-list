@@ -1,6 +1,6 @@
 import { Project } from "./Project";
 
-const todoList = (() => {
+const TodoList = (() => {
   let _projects = [Project("Default")];
 
   const getProjects = () => _projects;
@@ -36,4 +36,4 @@ const todoList = (() => {
   }
 })();
 
-export {todoList};
+export { TodoList };

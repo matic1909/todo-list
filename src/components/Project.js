@@ -1,4 +1,4 @@
-import { Task } from "./task";
+import { Task } from "./Task";
 
 const Project = (name) => {
   let projectName = name;
@@ -29,7 +29,7 @@ const Project = (name) => {
 
   const findTask = (name) => {
     return _tasks.find((task) => task.getName() === name);
-  }
+  };
 
   return {
     getName,
@@ -39,7 +39,7 @@ const Project = (name) => {
     addTask,
     deleteTask,
     isEmpty,
-    findTask
+    findTask,
   };
 };
 
